@@ -36,3 +36,14 @@ It also includes a Python-based Telemetry Dashboard to visualize your hardware e
 ```bash
 git clone [https://github.com/yourusername/BatStat.git](https://github.com/yourusername/BatStat.git)
 cd BatStat
+
+sudo apt update
+sudo apt install python3-pandas python3-matplotlib python3-numpy -y
+
+cp src/* ~/.local/bin/
+chmod +x ~/.local/bin/*
+
+mkdir -p ~/.config/systemd/user/
+cp systemd/battery-tracker.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now battery-tracker.service
