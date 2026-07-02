@@ -1,0 +1,26 @@
+#!/bin/bash
+
+STATE_FILE="$HOME/.local/state/battery_tracker/current_session.txt"
+BAT_PATH=$(find /sys/class/power_supply -name "BAT*" | head -n 1)
+
+if [ ! -f "$STATE_FILE" ]; then
+    echo "No battery data recorded yet."
+    exit 0
+fi
+
+source "$STATE_FILE"
+CURRENT_CAP=$(cat "$BAT_PATH/capacity")
+
+# Calculate formats
+H=$(printf "%02d" $((RUNTIME / 3600)))
+M=$(printf "%02d" $(( (RUNTIME % 3600) / 60 )))
+S=$(printf "%02d" $((RUNTIME % 60)))
+
+NH=$(printf "%02d" $((NETWORK_TIME / 3600)))
+NM=$(printf "%02d" $(( (NETWORK_TIME % 3600) / 60 )))
+NS=$(printf "%02d" $((NETWORK_TIME % 60)))
+
+# Output with the new "Phase" metric
+echo "Session No: $SESSION | Phase: $MODE | Date: $START_DATE"
+echo "Start: $START_CAP% | Current: $CURRENT_CAP%"
+echo "Runtime: $H:$M:$S | Network: $NH:$NM:$NS"
